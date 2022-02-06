@@ -41,6 +41,8 @@ class VisualizeWeight(QWidget):
         weights are shown layer by layer
         """
         super(VisualizeWeight, self).__init__()
+        self.weights = None
+        self.it = None
         self._setup_layout()
 
     def _setup_layout(self):
@@ -50,11 +52,11 @@ class VisualizeWeight(QWidget):
         self.mainVLayout = QVBoxLayout()
         self.mainGridLayout = QGridLayout()
         self._setup_canvas()
-        self._setup_mainGridLayout()
+        self._setup_main_grid_layout()
         self.mainVLayout.addLayout(self.mainGridLayout)
         self.setLayout(self.mainVLayout)
 
-    def _setup_mainGridLayout(self):
+    def _setup_main_grid_layout(self):
         """
         setup mainGridLayout
         """
@@ -123,7 +125,6 @@ class VisualizeWeight(QWidget):
                     column += 1
                 for i in range(len(self.weights[self.it])):
                     a = self.figure.add_subplot(5, column, i + 1)
-                    # a.set_title("weights "+str(i+1))
                     a.axis("off")
                     w = self.weights[self.it][i]
                     if len(self.weights[self.it][i]) == 3072:

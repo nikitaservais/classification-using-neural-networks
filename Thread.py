@@ -33,7 +33,7 @@ class Thread(QThread):
         """
         run the network with the parameters 
         """
-        score, cost, score_test, cost_test, weights = self.net.SGD(self, self.arg[0], alpha=self.arg[1],
+        score, cost, score_test, cost_test, weights = self.net.sgd(self, self.arg[0], alpha=self.arg[1],
                                                                    keep_prob=self.arg[2], c=self.arg[3],
                                                                    lmbda=self.arg[4], learning_rate=self.arg[5],
                                                                    epoch=self.arg[6],

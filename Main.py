@@ -30,25 +30,25 @@ def init_label(text):
 
 def init_combo_box(*argv):
     """
-    init comboBox
+    init combo_box
     """
-    comboBox = QComboBox()
+    combo_box = QComboBox()
     for item in argv:
-        comboBox.addItem(str(item))
-    return comboBox
+        combo_box.addItem(str(item))
+    return combo_box
 
 
 def init_double_spin_box(step, maximum, minimum, decimals, value):
     """
-    init doubleSpinBox
+    init double_spin_box
     """
-    doubleSpinBox = QDoubleSpinBox()
-    doubleSpinBox.setSingleStep(step)
-    doubleSpinBox.setMaximum(maximum)
-    doubleSpinBox.setMinimum(minimum)
-    doubleSpinBox.setDecimals(decimals)
-    doubleSpinBox.setValue(value)
-    return doubleSpinBox
+    double_spin_box = QDoubleSpinBox()
+    double_spin_box.setSingleStep(step)
+    double_spin_box.setMaximum(maximum)
+    double_spin_box.setMinimum(minimum)
+    double_spin_box.setDecimals(decimals)
+    double_spin_box.setValue(value)
+    return double_spin_box
 
 
 def init_button(text, parent, link):
@@ -70,6 +70,7 @@ class Window(QWidget):
         """
         super(Window, self).__init__()
         # self.showMaximized()
+        self.workThread = None
         self.setWindowTitle("Partie 4")
         self.setWindowIcon(QIcon('ULBLogo.png'))
         self._setup_layout()
@@ -81,7 +82,7 @@ class Window(QWidget):
         """
         self.MainVLayout = QVBoxLayout()
         self.MainGridLaypout = QGridLayout()
-        self._setup_MainGridLayout()
+        self._setup_main_grid_layout()
         self._setup_tabs()
         self.MainVLayout.addLayout(self.MainGridLaypout)
         self.MainVLayout.addWidget(self.MainTabWidget)
@@ -96,7 +97,7 @@ class Window(QWidget):
         self.MainTabWidget.addTab(visualize_data_widget, "Visualize data")
         self.MainTabWidget.addTab(visualize_weight_widget, "Visualize weight")
 
-    def _setup_MainGridLayout(self):
+    def _setup_main_grid_layout(self):
         """
         setup MainGridLayout
         """
@@ -167,17 +168,17 @@ class Window(QWidget):
         """
         get data from all widgets
         """
-        dataSet = self.dataSet.currentText()
+        data_set = self.dataSet.currentText()
         dataFile = self.dataFile.currentText()
-        trainingSize = self.trainingSize.value()
-        nbHiddenLayer = int(self.nbHiddenLayer.value())
-        nbNeurons = int(self.nbNeurons.value())
-        probDropout = self.probDropout.value()
+        training_size = self.trainingSize.value()
+        nb_hidden_layer = int(self.nbHiddenLayer.value())
+        nb_neurons = int(self.nbNeurons.value())
+        prob_dropout = self.probDropout.value()
         c = int(self.c.value())
         lmbda = self.lmbda.value()
         learningRate = self.learningRate.value()
         epoch = int(self.epoch.value())
-        return dataSet, dataFile, trainingSize, nbHiddenLayer, nbNeurons, probDropout, c, lmbda, learningRate, epoch
+        return data_set, dataFile, training_size, nb_hidden_layer, nb_neurons, prob_dropout, c, lmbda, learningRate, epoch
 
     def done(self):
         """

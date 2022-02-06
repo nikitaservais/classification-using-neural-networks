@@ -5,12 +5,12 @@ from matplotlib.figure import Figure
 
 def init_check_box(text):
     """
-    init checkBox
+    init check_box
     """
-    checkBox = QCheckBox()
-    checkBox.setText(text)
-    checkBox.setChecked(True)
-    return checkBox
+    check_box = QCheckBox()
+    check_box.setText(text)
+    check_box.setChecked(True)
+    return check_box
 
 
 def init_button(text, parent, link):
@@ -28,18 +28,20 @@ class Graphics(QWidget):
         Plot 2 graphs that represents the cost of the network and the accuracy
         """
         super(Graphics, self).__init__()
+        self.current = None
+        self.epoch = None
         self._setup_layout()
-        self.show
+        self.show()
 
     def _setup_layout(self):
         """
         setup layout
         """
         self.MainVLayout = QVBoxLayout()
-        self.MainGridLaypout = QGridLayout()
-        self._setup_MainGridLayout()
+        self.MainGridLayout = QGridLayout()
+        self._setup_main_grid_layout()
         self._setup_canvas()
-        self.MainVLayout.addLayout(self.MainGridLaypout)
+        self.MainVLayout.addLayout(self.MainGridLayout)
         self.MainVLayout.addWidget(self.canvas)
         self.setLayout(self.MainVLayout)
 
@@ -65,9 +67,9 @@ class Graphics(QWidget):
         self.scorePlot.set_ylabel("Score")
         self.canvas.draw()
 
-    def _setup_MainGridLayout(self):
+    def _setup_main_grid_layout(self):
         """
-        setup MainGridLaypout
+        setup MainGridLayout
         """
         self.clearButton = init_button("Clear graphs", self, self.clear_plot)
 
@@ -84,14 +86,14 @@ class Graphics(QWidget):
 
     def add_box(self):
         """
-        add box to MainGridLaypout
+        add box to MainGridLayout
         """
-        self.MainGridLaypout.addWidget(self.clearButton, 0, 0)
-        self.MainGridLaypout.addWidget(self.progressBar, 0, 1, 1, 3)
-        self.MainGridLaypout.addWidget(self.monitorTrainingCost, 1, 0)
-        self.MainGridLaypout.addWidget(self.monitorValidationCost, 1, 1)
-        self.MainGridLaypout.addWidget(self.monitorTrainingAccuracy, 1, 2)
-        self.MainGridLaypout.addWidget(self.monitorValidationAccuracy, 1, 3)
+        self.MainGridLayout.addWidget(self.clearButton, 0, 0)
+        self.MainGridLayout.addWidget(self.progressBar, 0, 1, 1, 3)
+        self.MainGridLayout.addWidget(self.monitorTrainingCost, 1, 0)
+        self.MainGridLayout.addWidget(self.monitorValidationCost, 1, 1)
+        self.MainGridLayout.addWidget(self.monitorTrainingAccuracy, 1, 2)
+        self.MainGridLayout.addWidget(self.monitorValidationAccuracy, 1, 3)
 
     def draw_plot(self, cost, cost_test, score, score_test):
         """
@@ -130,12 +132,13 @@ class Graphics(QWidget):
         """
         get value from the buttons
         """
-        monitorTrainingAccuracyBool = self.monitorTrainingAccuracy.isChecked()
-        monitorTrainingCostBool = self.monitorTrainingCost.isChecked()
-        monitorValidationAccuracyBool = self.monitorValidationAccuracy.isChecked()
-        monitorValidationCostBool = self.monitorValidationCost.isChecked()
+        monitor_training_accuracy_bool = self.monitorTrainingAccuracy.isChecked()
+        monitor_training_cost_bool = self.monitorTrainingCost.isChecked()
+        monitor_validation_accuracy_bool = self.monitorValidationAccuracy.isChecked()
+        monitor_validation_cost_bool = self.monitorValidationCost.isChecked()
         return (
-        monitorTrainingAccuracyBool, monitorTrainingCostBool, monitorValidationAccuracyBool, monitorValidationCostBool)
+            monitor_training_accuracy_bool, monitor_training_cost_bool, monitor_validation_accuracy_bool,
+            monitor_validation_cost_bool)
 
     def progress(self, current, epoch):
         """

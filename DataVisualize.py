@@ -40,6 +40,8 @@ class VisualizeData(QWidget):
         weights are shown layer by layer
         """
         super(VisualizeData, self).__init__()
+        self.data = None
+        self.it = None
         self._setup_layout()
 
     def _setup_layout(self):
@@ -49,11 +51,11 @@ class VisualizeData(QWidget):
         self.mainVLayout = QVBoxLayout()
         self.mainGridLayout = QGridLayout()
         self._setup_canvas()
-        self._setup_mainGridLayout()
+        self._setup_main_grid_layout()
         self.mainVLayout.addLayout(self.mainGridLayout)
         self.setLayout(self.mainVLayout)
 
-    def _setup_mainGridLayout(self):
+    def _setup_main_grid_layout(self):
         """
         setup mainGridLayout
         """
