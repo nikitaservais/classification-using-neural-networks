@@ -5,14 +5,15 @@ import numpy as np
 
 def read_file(small=False):
     k = 2 if small else 6
-    for i in range(1,k):
-        with open('Cifar10_'+str(i), 'rb') as fo:
+    for i in range(1, k):
+        with open('Cifar10_' + str(i), 'rb') as fo:
             dict = pickle.load(fo, encoding='bytes')
-            data_image = [np.reshape(x/255.0, (3072,1)) for x in dict[b'data']]
+            data_image = [np.reshape(x / 255.0, (3072, 1)) for x in dict[b'data']]
             data_y = [vecterized(x) for x in dict[b'labels']]
-            data = np.array(tuple(zip(data_image,data_y)))
-        res = data if i == 1 else np.concatenate((res, data))  
+            data = np.array(tuple(zip(data_image, data_y)))
+        res = data if i == 1 else np.concatenate((res, data))
     return res[:2000] if small else res
+
 
 def vecterized(y):
     """

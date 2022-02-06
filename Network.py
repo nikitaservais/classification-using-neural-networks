@@ -1,15 +1,17 @@
 import numpy as np
- 
+
+
 def sigmoid(x, prime=False):
     """
     return the sigmoide of x or sigmoid prime
     """
     if prime:
-        res = sigmoid(x)*(1-sigmoid(x))
+        res = sigmoid(x) * (1 - sigmoid(x))
     else:
-        res = 1.0/(1.0+np.exp(-x))
+        res = 1.0 / (1.0 + np.exp(-x))
     return res
-    
+
+
 def relu(x, prime=False):
     """
     return the relu of x or relu prime
@@ -20,8 +22,9 @@ def relu(x, prime=False):
         res = x * (x > 0)
     return res
 
+
 class Network():
-    
+
     def __init__(self, layers=[784, 30, 10], logistic_function=sigmoid):
         """
         The list layers contains the number of neurons in the respective
@@ -31,33 +34,33 @@ class Network():
         self.nb_layers = len(layers)
         self.layers = layers
         self.mask = [1 for i in range(self.nb_layers)]
-        
+
     def init_weights(self):
         """
         initialized bias and weights
         """
         # scaling weights vector by the square root of its number of inputs # enable to have very fast good result (work well after normalize the data)
         self.b = [np.random.randn(y, 1) for y in self.layers[1:]]
-        self.w = [np.random.randn(y, x)/np.sqrt(x) for x, y in zip(self.layers[:-1], self.layers[1:])]
-    
-    def forwardPass(self, x, p=1): 
+        self.w = [np.random.randn(y, x) / np.sqrt(x) for x, y in zip(self.layers[:-1], self.layers[1:])]
+
+    def forwardPass(self, x, p=1):
         """
         forward pass on an image x with the weights
         return neurons and neurons activation
         """
         # init neuron and activation
-        a = [False for i in range(self.nb_layers-1)]
+        a = [False for i in range(self.nb_layers - 1)]
         h = [False for i in range(self.nb_layers)]
         # activation first layer is input
         h[0] = x
-        for l in range(1,self.nb_layers):
+        for l in range(1, self.nb_layers):
             if p != 1:
-                h[l-1] = np.multiply(self.mask[l-1],h[l-1])      
-            a[l-1] = np.dot(self.w[l-1], h[l-1]) + self.b[l-1]
-            a[l-1] /= p       # inverted dropout
-            h[l] = self.logistic_function(a[l-1])
-        return (a, h) 
-        
+                h[l - 1] = np.multiply(self.mask[l - 1], h[l - 1])
+            a[l - 1] = np.dot(self.w[l - 1], h[l - 1]) + self.b[l - 1]
+            a[l - 1] /= p  # inverted dropout
+            h[l] = self.logistic_function(a[l - 1])
+        return (a, h)
+
     def backpropagation(self, a, h, y):
         """
         Calculate the cost for each weights and bias using cross entropy function (and not quadriatic)
@@ -67,17 +70,18 @@ class Network():
         w_J = [np.zeros(w.shape) for w in self.w]
         # backward gradient 
         # output gradient
-        g = h[-1] - y 
+        g = h[-1] - y
         b_J[-1] = g
         w_J[-1] = np.dot(g, h[-2].transpose())
-        for l in range(self.nb_layers-3, -1, -1):
-            g = np.dot(self.w[l+1].transpose(), g) * self.logistic_function(a[l],prime=True)
+        for l in range(self.nb_layers - 3, -1, -1):
+            g = np.dot(self.w[l + 1].transpose(), g) * self.logistic_function(a[l], prime=True)
             b_J[l] = g
             w_J[l] = np.dot(g, h[l].transpose())
         return (b_J, w_J)
-            
-    def SGD(self, thread, data, alpha=0.9, keep_prob=1.0, c=0, lmbda=0.0, learning_rate=0.5, epoch=20, 
-            monitor_training_accuracy=True, monitor_training_cost=True, monitor_evaluation_accuracy=True, monitor_evaluation_cost=True):
+
+    def SGD(self, thread, data, alpha=0.9, keep_prob=1.0, c=0, lmbda=0.0, learning_rate=0.5, epoch=20,
+            monitor_training_accuracy=True, monitor_training_cost=True, monitor_evaluation_accuracy=True,
+            monitor_evaluation_cost=True):
         """
         stochastic gradient descent training algorithm 
         
@@ -91,7 +95,7 @@ class Network():
         
         return cost and accuracy on the training set and the evaluation set if flags are actived
         """
-        size_trainingset = int(len(data)*alpha)
+        size_trainingset = int(len(data) * alpha)
         test_data = data[size_trainingset:]
         train_data = data[:size_trainingset]
         training_accuracy = []
@@ -107,9 +111,9 @@ class Network():
         max_score = 0
         # main loop
         print("training...")
-        for it in range(epoch) :
+        for it in range(epoch):
             # it start
-            for x,y in train_data :
+            for x, y in train_data:
                 # dropout
                 if keep_prob != 1.0:
                     self.mask = self.dropout(keep_prob)
@@ -118,64 +122,65 @@ class Network():
                 # backward pass
                 b_J, w_J = self.backpropagation(a, h, y)
                 # update weights
-                for i in range(len(self.w)) :
+                for i in range(len(self.w)):
                     self.b[i] = self.b[i] - learning_rate * b_J[i]
-                    self.w[i] = (1-(learning_rate*lmbda)/n)*self.w[i] - learning_rate * w_J[i] # L2 regularization 
-                    if c != 0 :
+                    self.w[i] = (1 - (learning_rate * lmbda) / n) * self.w[i] - learning_rate * w_J[
+                        i]  # L2 regularization
+                    if c != 0:
                         np.sqrt(np.linalg.norm(self.w[i])) < c  # max norm regularization
-            print("Epoch {} complete".format(it+1))
+            print("Epoch {} complete".format(it + 1))
             masks = [1 for i in range(self.nb_layers)]
             if monitor_training_accuracy:
                 score = self.evaluate(train_data)
-                training_accuracy.append(round(score/(len(train_data))*100, 2))
-            if monitor_training_cost :
+                training_accuracy.append(round(score / (len(train_data)) * 100, 2))
+            if monitor_training_cost:
                 cost = self.total_cost(train_data, lmbda)
                 training_cost.append(cost)
             if monitor_evaluation_accuracy:
                 score = self.evaluate(test_data)
-                evaluation_accuracy.append(round(score/(len(test_data))*100, 2))
-                print("test set accuracy : "+str(round(score/(len(test_data))*100, 2))+'%')
+                evaluation_accuracy.append(round(score / (len(test_data)) * 100, 2))
+                print("test set accuracy : " + str(round(score / (len(test_data)) * 100, 2)) + '%')
             if monitor_evaluation_cost:
                 cost = self.total_cost(test_data, lmbda)
                 evaluation_cost.append(cost)
-                
-            thread.send_data(it+1, epoch, training_cost, evaluation_cost, training_accuracy, evaluation_accuracy)
+
+            thread.send_data(it + 1, epoch, training_cost, evaluation_cost, training_accuracy, evaluation_accuracy)
             if thread.stop:
                 thread.terminate()
         print(max(evaluation_accuracy))
         return (training_accuracy, training_cost, evaluation_accuracy, evaluation_cost, self.w)
-    
+
     def dropout(self, keep_prob):
         """
         keep_prob : probability of keeping a neuron from the hidden layer active
         masks : listsize of number of hidden layer true and false to represent activation
         """
         masks = [1 for i in range(self.nb_layers)]
-        masks[0] = np.random.rand(self.layers[0],1) < 0.8  # best for the input layer to have low prob of dropout
-        for i in range(1,self.nb_layers-1):
-            masks[i] = np.random.rand(self.layers[i],1) < keep_prob
+        masks[0] = np.random.rand(self.layers[0], 1) < 0.8  # best for the input layer to have low prob of dropout
+        for i in range(1, self.nb_layers - 1):
+            masks[i] = np.random.rand(self.layers[i], 1) < keep_prob
         return masks
-    
+
     def feedForward(self, h):
         """
         feed an input through the network 
         return the ouput activation
         """
         for b, w in zip(self.b, self.w):
-            h = self.logistic_function(np.dot(w, h)+b)
+            h = self.logistic_function(np.dot(w, h) + b)
         return h
-    
+
     def evaluate(self, data):
         """
         return the score made by the network on data
         """
         score = 0
-        for x,y in data :
+        for x, y in data:
             h = self.feedForward(x)
-            if np.argmax(h) == np.argmax(y) :
+            if np.argmax(h) == np.argmax(y):
                 score += 1
         return score
-        
+
     def total_cost(self, data, lmbda):
         """
         lmbda : regularization factor
@@ -184,7 +189,6 @@ class Network():
         cost = 0.0
         for x, y in data:
             h = self.feedForward(x)
-            cost += np.sum(np.nan_to_num(-y*np.log(h)-(1-y)*np.log(1-h)))/len(data)
+            cost += np.sum(np.nan_to_num(-y * np.log(h) - (1 - y) * np.log(1 - h))) / len(data)
             # cost += (0.5*np.sum((y-h)**2))/len(data)
         return cost
- 
