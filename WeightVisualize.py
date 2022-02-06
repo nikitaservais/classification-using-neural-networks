@@ -1,7 +1,7 @@
 import numpy as np
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QGridLayout, QVBoxLayout, QWidget, QComboBox, QPushButton, QLabel
-from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 
 def init_label(text):
